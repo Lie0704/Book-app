@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
+    :root { --ink:#3b2b25; --paper:#fffaf0; --rust:#b85b3e; --forest:#45664f; --gold:#d49a3d; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); font:16px 'Gowun Dodum', sans-serif; background:linear-gradient(135deg,#f1d8b5,#fffaf0 48%,#dce7d9); }
+    main { max-width:1100px; margin:auto; padding:24px 18px 42px; }
+    .hero { position:relative; min-height:245px; overflow:hidden; padding:28px 30px; border-bottom:1px solid #d8c3a8; }
+    .hero-copy { position:relative; z-index:2; max-width:58%; }
+    .eyebrow { color:var(--rust); font-weight:bold; letter-spacing:.08em; }
+    h1,h2,h3 { font-family:'Jua',sans-serif; letter-spacing:0; }
+    h1 { font-size:clamp(2.5rem,7vw,5rem); margin:8px 0; }
+    .hero p { font-size:1.15rem; margin:0; }
+    .hero-art { position:absolute; right:4%; bottom:0; width:360px; height:225px; }
+    .hill { position:absolute; right:-10%; bottom:-78px; width:530px; height:175px; border-radius:50% 50% 0 0; background:#b8c89f; transform:rotate(-3deg); }
+    .trunk { position:absolute; right:42%; bottom:28px; width:25px; height:128px; border-radius:12px 12px 3px 3px; background:#79503a; transform:rotate(3deg); }
+    .trunk:after { content:''; position:absolute; left:-44px; top:45px; width:66px; height:13px; border-radius:50%; background:#79503a; transform:rotate(-35deg); }
+    .canopy { position:absolute; right:22%; bottom:111px; width:145px; height:112px; border-radius:52% 48% 45% 55%; background:#b84e32; box-shadow:-57px 25px 0 #d27a35,48px 24px 0 #c76132,3px -35px 0 #d99a3c; }
+    .leaf { position:absolute; width:13px; height:22px; border-radius:90% 10% 90% 10%; background:#b84e32; transform:rotate(35deg); }
+    .one { right:6%; top:35px; }.two { right:31%; top:15px; background:#d99a3c; transform:rotate(90deg); }.three { right:12%; top:122px; background:#d27a35; transform:rotate(5deg); }.four { right:49%; top:82px; background:#e2ac49; transform:rotate(-35deg); }
+    .book { position:absolute; right:7%; bottom:18px; width:74px; height:48px; border-radius:3px 7px 7px 3px; background:#f6e8c8; border:5px solid #6b4a3b; transform:rotate(-8deg); box-shadow:8px 7px 0 #0000001f; }
+    .book:after { content:'BOOK'; position:absolute; top:11px; left:12px; color:var(--rust); font:11px 'Jua'; }
+    .notice { margin:18px 0; padding:13px 16px; background:#fffaf0cc; border-left:4px solid var(--rust); }
+    .tabs { display:flex; gap:8px; margin:22px 0 0; }.tab { flex:1; padding:14px; border:1px solid #d8c3a8; border-bottom:0; border-radius:7px 7px 0 0; background:#efe0c9; color:var(--ink); font:18px 'Jua'; cursor:pointer; }.tab.active { background:var(--paper); color:var(--forest); }
+    .panel { display:none; padding:22px; background:#fffaf0cc; border:1px solid #d8c3a8; }.panel.active { display:block; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }.field { display:flex; flex-direction:column; gap:6px; margin:10px 0; }.field.full { grid-column:1/-1; } label { font-weight:bold; } input,select,textarea { padding:11px; border:1px solid #cbb99e; border-radius:5px; background:#fffdf8; color:var(--ink); font:inherit; } button.submit { width:100%; margin-top:12px; padding:13px; border:0; border-radius:5px; background:var(--forest); color:white; font:17px 'Jua'; cursor:pointer; } button.submit:disabled { opacity:.6; cursor:wait; }
+    .status { min-height:28px; margin-top:10px; font-weight:bold; }.status.error { color:#a13e30; }.status.ok { color:var(--forest); }
+    .calendar { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }.day { min-height:125px; padding:12px; border:1px solid #d8c3a8; border-radius:6px; background:#fffaf0d9; }.day.booked { border:2px solid var(--rust); }.day strong { color:var(--rust); font:18px 'Jua'; }.meta { margin-top:7px; font-size:13px; line-height:1.5; }
+    @media(max-width:700px) { .hero-copy { max-width:100%; }.hero-art { right:-110px; opacity:.45; transform:scale(.8); transform-origin:bottom right; }.grid,.calendar { grid-template-columns:repeat(2,1fr); }.panel { padding:15px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero"><div class="hero-copy"><div class="eyebrow">LIBRARY BOOK PICNIC · 2026</div><h1>도서관 북크닉</h1><p>책 한 권과 함께, 도서관에서 보내는 작은 소풍</p></div><div class="hero-art" aria-hidden="true"><div class="hill"></div><div class="trunk"></div><div class="canopy"></div><i class="leaf one"></i><i class="leaf two"></i><i class="leaf three"></i><i class="leaf four"></i><div class="book"></div></div></section>
+  <div class="notice">📅 행사 기간 <b>9월 14일(월) ~ 9월 21일(월)</b> · 신청자는 로그인 없이 바로 예약할 수 있습니다.</div>
+  <div class="tabs"><button class="tab active" data-panel="class-panel">🏫 수업시간 예약</button><button class="tab" data-panel="after-panel">🌿 방과후 예약</button></div>
+  <section id="class-panel" class="panel active"><h2>수업시간 예약</h2><p>한 교시당 최대 2개 반, 총 60명까지 신청할 수 있습니다.</p><form id="class-form"><div class="grid"><div class="field"><label>방문 날짜</label><input name="date" type="date" min="2026-09-14" max="2026-09-21" value="2026-09-14" required></div><div class="field"><label>수업 교시</label><select name="period" id="class-period"></select></div><div class="field"><label>선생님 이름</label><input name="teacher" placeholder="예: 김도서" required></div><div class="field"><label>학급</label><input name="classroom" placeholder="예: 5학년 2반" required></div><div class="field"><label>수업</label><input name="subject" placeholder="예: 국어" required></div><div class="field"><label>참여 인원</label><input name="students" type="number" min="1" max="60" value="30" required></div></div><button class="submit">수업 예약 추가</button><div class="status"></div></form></section>
+  <section id="after-panel" class="panel"><h2>방과후 예약</h2><p>방과후 1교시는 한 팀당 2~4명이 신청할 수 있습니다.</p><form id="after-form"><div class="grid"><div class="field"><label>방문 날짜</label><input name="date" type="date" min="2026-09-14" max="2026-09-21" value="2026-09-14" required></div><div class="field"><label>대표자 이름</label><input name="team" placeholder="예: 이책벌" required></div><div class="field"><label>참여 인원</label><input name="students" type="number" min="2" max="4" value="2" required></div><div class="field full"><label>참여자 이름</label><textarea name="names" rows="3" placeholder="이름을 쉼표로 구분해 입력해 주세요" required></textarea></div></div><button class="submit">방과후 예약 추가</button><div class="status"></div></form></section>
+  <section><h2>🍂 예약 달력</h2><p>예약이 있는 날짜는 테두리로 표시되며, 날짜 아래에서 예약자를 확인할 수 있습니다.</p><div id="calendar" class="calendar"></div></section>
+</main>
+<script>
+const periods = ['1교시','2교시','3교시','4교시','5교시','6교시','7교시'];
+const calendar = document.getElementById('calendar');
+let reservations = [];
+periods.forEach(period => document.getElementById('class-period').add(new Option(period, period)));
+document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => { document.querySelectorAll('.tab,.panel').forEach(item => item.classList.remove('active')); tab.classList.add('active'); document.getElementById(tab.dataset.panel).classList.add('active'); });
+function loadReservations() { google.script.run.withSuccessHandler(items => { reservations = items; renderCalendar(); }).withFailureHandler(showError).getReservations(); }
+function renderCalendar() {
+  const start = new Date('2026-09-14T00:00:00'); calendar.innerHTML = '';
+  for (let i = 0; i < 8; i++) { const day = new Date(start); day.setDate(start.getDate() + i); const key = day.toISOString().slice(0,10); const items = reservations.filter(item => item.date === key); const box = document.createElement('div'); box.className = 'day' + (items.length ? ' booked' : ''); const title = document.createElement('strong'); title.textContent = `${day.getMonth()+1}/${day.getDate()} (${['일','월','화','수','목','금','토'][day.getDay()]})`; box.appendChild(title); const meta = document.createElement('div'); meta.className = 'meta'; const classItems = items.filter(item => item.type === '수업'); const afterItems = items.filter(item => item.type === '방과후'); meta.textContent = `수업 ${classItems.length}건 · 방과후 ${afterItems.length}팀` + (items.length ? '\n' + items.map(item => item.type === '수업' ? `${item.teacher} 선생님 · ${item.classroom}` : item.team).join('\n') : '\n예약 없음'); meta.style.whiteSpace = 'pre-line'; box.appendChild(meta); calendar.appendChild(box); }
+}
+function formData(form, type) { const data = Object.fromEntries(new FormData(form)); data.type = type; data.period = type === '수업' ? data.period : '방과후 1교시'; return data; }
+function submitForm(form, type) { const button = form.querySelector('.submit'); const status = form.querySelector('.status'); button.disabled = true; status.textContent = '예약을 저장하고 있습니다...'; status.className = 'status'; google.script.run.withSuccessHandler(items => { reservations = items; renderCalendar(); form.reset(); status.textContent = '예약이 완료되었습니다.'; status.className = 'status ok'; button.disabled = false; }).withFailureHandler(error => { status.textContent = error.message || '예약 저장에 실패했습니다.'; status.className = 'status error'; button.disabled = false; }).saveReservation(formData(form, type)); }
+document.getElementById('class-form').onsubmit = event => { event.preventDefault(); submitForm(event.target, '수업'); };
+document.getElementById('after-form').onsubmit = event => { event.preventDefault(); submitForm(event.target, '방과후'); };
+function showError(error) { calendar.textContent = error.message || '예약 현황을 불러오지 못했습니다.'; }
+loadReservations();
+</script>
+</body>
+</html>
