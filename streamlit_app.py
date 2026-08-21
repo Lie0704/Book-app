@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from html import escape
 
 import streamlit as st
 
@@ -14,19 +15,38 @@ st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
-    :root { --ink: #253238; --teal: #167d72; --coral: #e8755f; --paper: #fffdf8; }
-    .stApp { background: linear-gradient(135deg, #f5eee2 0%, #fffdf8 48%, #e2f0eb 100%); color: var(--ink); }
+    :root { --ink: #3a2c25; --forest: #3f6653; --rust: #b85b3e; --gold: #d69b42; --paper: #fffaf0; }
+    .stApp { background: linear-gradient(135deg, #f3dfc3 0%, #fffaf0 48%, #dce8d9 100%); color: var(--ink); }
     h1, h2, h3 { font-family: 'Jua', sans-serif !important; letter-spacing: 0 !important; color: var(--ink); }
     p, label, input, textarea, button, [data-testid='stMarkdownContainer'] { font-family: 'Gowun Dodum', sans-serif; }
-    .hero { padding: 2rem 2.2rem 1.6rem; border-bottom: 1px solid #d9ded9; }
-    .eyebrow { color: var(--coral); font-weight: 700; letter-spacing: .08em; }
+    .hero { position: relative; min-height: 235px; overflow: hidden; padding: 2.2rem 2.2rem 1.8rem; border-bottom: 1px solid #d9cdbb; background: linear-gradient(180deg, rgba(255,250,240,.3), rgba(231,193,137,.25)); }
+    .hero-copy { position: relative; z-index: 2; max-width: 58%; }
+    .hero-art { position: absolute; right: 4%; bottom: 0; width: 360px; height: 220px; }
+    .hill { position: absolute; right: -10%; bottom: -76px; width: 520px; height: 170px; border-radius: 50% 50% 0 0; background: #b6c49b; transform: rotate(-3deg); }
+    .trunk { position: absolute; right: 42%; bottom: 30px; width: 25px; height: 125px; border-radius: 12px 12px 3px 3px; background: #79503a; transform: rotate(3deg); }
+    .trunk:after { content: ''; position: absolute; left: -44px; top: 45px; width: 66px; height: 13px; border-radius: 50%; background: #79503a; transform: rotate(-35deg); }
+    .canopy { position: absolute; right: 22%; bottom: 112px; width: 145px; height: 112px; border-radius: 52% 48% 45% 55%; background: #b84e32; box-shadow: -57px 25px 0 #d27a35, 48px 24px 0 #c76132, 3px -35px 0 #d99a3c; }
+    .leaf { position: absolute; width: 13px; height: 22px; border-radius: 90% 10% 90% 10%; background: #b84e32; transform: rotate(35deg); }
+    .leaf.one { right: 6%; top: 35px; } .leaf.two { right: 31%; top: 15px; background: #d99a3c; transform: rotate(90deg); }
+    .leaf.three { right: 12%; top: 122px; background: #d27a35; transform: rotate(5deg); }
+    .leaf.four { right: 49%; top: 82px; background: #e2ac49; transform: rotate(-35deg); }
+    .picnic-book { position: absolute; right: 7%; bottom: 18px; width: 74px; height: 48px; border-radius: 3px 7px 7px 3px; background: #f6e8c8; border: 5px solid #6b4a3b; transform: rotate(-8deg); box-shadow: 8px 7px 0 rgba(107,74,59,.18); }
+    .picnic-book:after { content: 'BOOK'; position: absolute; top: 11px; left: 12px; color: #b85b3e; font: 11px 'Jua', sans-serif; }
+    .eyebrow { color: var(--rust); font-weight: 700; letter-spacing: .08em; }
     .hero h1 { font-size: clamp(2.2rem, 5vw, 4.2rem) !important; margin: .15rem 0 .4rem; }
     .hero p { font-size: 1.12rem; margin: 0; }
-    .section-label { color: var(--teal); font-size: 1.45rem; font-weight: 700; margin: 1rem 0 .4rem; }
-    .info-strip { background: rgba(255,253,248,.75); border-left: 4px solid var(--coral); padding: .9rem 1.1rem; margin: 1rem 0; }
-    .slot { background: rgba(255,253,248,.85); border: 1px solid #d9ded9; padding: .7rem 1rem; margin: .45rem 0; }
-    .slot strong { color: var(--teal); }
-    div.stButton > button, div[data-testid='stFormSubmitButton'] button { border-radius: 6px; background: var(--teal); color: white; border: 0; }
+    .section-label { color: var(--forest); font-size: 1.45rem; font-weight: 700; margin: 1rem 0 .4rem; }
+    .info-strip { background: rgba(255,250,240,.8); border-left: 4px solid var(--rust); padding: .9rem 1.1rem; margin: 1rem 0; }
+    .slot { background: rgba(255,250,240,.85); border: 1px solid #d9cdbb; padding: .7rem 1rem; margin: .45rem 0; }
+    .slot strong { color: var(--forest); }
+    .calendar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; margin-top: .8rem; }
+    .calendar-day { min-height: 115px; background: rgba(255,250,240,.82); border: 1px solid #d9cdbb; border-radius: 6px; padding: .75rem; }
+    .calendar-day.booked { border: 2px solid var(--rust); box-shadow: 0 4px 14px rgba(111, 70, 43, .1); }
+    .calendar-date { font-family: 'Jua', sans-serif; font-size: 1.15rem; color: var(--rust); }
+    .calendar-meta { margin-top: .45rem; font-size: .82rem; line-height: 1.55; }
+    div.stButton > button, div[data-testid='stFormSubmitButton'] button { border-radius: 6px; background: var(--forest); color: white; border: 0; }
+    @media (max-width: 700px) { .calendar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px) { .hero-copy { max-width: 100%; } .hero-art { right: -105px; opacity: .46; transform: scale(.82); transform-origin: bottom right; } }
     </style>
     """,
     unsafe_allow_html=True,
@@ -48,6 +68,31 @@ def reservation_key(selected_date, period):
     return f"{selected_date.isoformat()}::{period}"
 
 
+def calendar_markup():
+    day_names = "월화수목금토일"
+    cells = []
+    for calendar_date in event_dates():
+        class_items = [
+            item
+            for period in CLASS_PERIODS
+            for item in st.session_state.class_reservations.get(reservation_key(calendar_date, period), [])
+        ]
+        after_items = st.session_state.after_school_reservations.get(
+            reservation_key(calendar_date, AFTER_SCHOOL_PERIOD), []
+        )
+        people = [f'{item["teacher"]} 선생님 · {item["classroom"]}' for item in class_items]
+        people.extend(item["team"] for item in after_items)
+        details = "<br>".join(escape(person) for person in people)
+        status = f"수업 {len(class_items)}건 · 방과후 {len(after_items)}팀"
+        cells.append(
+            f'<div class="calendar-day {"booked" if people else ""}">'
+            f'<div class="calendar-date">{calendar_date.month}/{calendar_date.day} ({day_names[calendar_date.weekday()]})</div>'
+            f'<div class="calendar-meta">{escape(status)}'
+            f'{"<br>" + details if details else "<br>예약 없음"}</div></div>'
+        )
+    return '<div class="calendar">' + "".join(cells) + "</div>"
+
+
 if "class_reservations" not in st.session_state:
     st.session_state.class_reservations = {}
 if "after_school_reservations" not in st.session_state:
@@ -56,31 +101,32 @@ if "after_school_reservations" not in st.session_state:
 st.markdown(
     """
     <div class="hero">
-        <div class="eyebrow">LIBRARY BOOK PICNIC · 2026</div>
-        <h1>도서관 북크닉</h1>
-        <p>책 한 권과 함께, 도서관에서 보내는 작은 소풍</p>
+        <div class="hero-copy">
+            <div class="eyebrow">LIBRARY BOOK PICNIC · 2026</div>
+            <h1>도서관 북크닉</h1>
+            <p>책 한 권과 함께, 도서관에서 보내는 작은 소풍</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+            <div class="hill"></div>
+            <div class="trunk"></div>
+            <div class="canopy"></div>
+            <div class="leaf one"></div><div class="leaf two"></div>
+            <div class="leaf three"></div><div class="leaf four"></div>
+            <div class="picnic-book"></div>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.markdown('<div class="info-strip">📅 행사 기간 <b>9월 14일(월) ~ 9월 21일(월)</b> · 원하는 날짜를 고른 뒤 수업 또는 방과후 시간을 예약해 주세요.</div>', unsafe_allow_html=True)
+st.markdown('<div class="info-strip">📅 행사 기간 <b>9월 14일(월) ~ 9월 21일(월)</b> · 먼저 예약 종류를 선택한 뒤 날짜와 시간을 입력해 주세요.</div>', unsafe_allow_html=True)
 
-selected_date = st.date_input(
-    "방문 날짜",
-    value=EVENT_START,
-    min_value=EVENT_START,
-    max_value=EVENT_END,
-    format="YYYY-MM-DD",
-)
-date_label = f"{selected_date.month}월 {selected_date.day}일 ({'월화수목금토일'[selected_date.weekday()]})"
-st.subheader(f"{date_label} 예약 현황")
+class_tab, after_tab = st.tabs(["🏫 수업시간 예약", "🌿 방과후 예약"])
 
-left, right = st.columns(2, gap="large")
-
-with left:
+with class_tab:
     st.markdown('<div class="section-label">🏫 수업시간 예약</div>', unsafe_allow_html=True)
     st.caption("한 교시당 최대 2개 반, 총 60명까지 신청할 수 있습니다. 같은 날 여러 교시 신청도 가능합니다.")
+    selected_date = st.date_input("수업 방문 날짜", value=EVENT_START, min_value=EVENT_START, max_value=EVENT_END, format="YYYY-MM-DD", key="class_date")
     class_period = st.selectbox("수업 교시", CLASS_PERIODS, key="class_period")
     class_key = reservation_key(selected_date, class_period)
     class_items = st.session_state.class_reservations.get(class_key, [])
@@ -115,9 +161,10 @@ with left:
     else:
         st.caption("아직 신청된 반이 없습니다.")
 
-with right:
+with after_tab:
     st.markdown('<div class="section-label">🌿 방과후 예약</div>', unsafe_allow_html=True)
     st.caption("방과후 1교시는 한 팀당 2~4명이 함께 신청할 수 있습니다.")
+    selected_date = st.date_input("방과후 방문 날짜", value=EVENT_START, min_value=EVENT_START, max_value=EVENT_END, format="YYYY-MM-DD", key="after_date")
     after_key = reservation_key(selected_date, AFTER_SCHOOL_PERIOD)
     after_items = st.session_state.after_school_reservations.get(after_key, [])
     st.markdown(f"**현재 신청 팀** {len(after_items)}팀", unsafe_allow_html=False)
@@ -148,5 +195,9 @@ with right:
     else:
         st.caption("아직 신청된 팀이 없습니다.")
 
+st.divider()
+st.markdown('<div class="section-label">🍂 예약 달력</div>', unsafe_allow_html=True)
+st.caption("예약이 있는 날짜는 테두리로 표시됩니다. 날짜 아래에서 예약한 선생님, 학급 또는 방과후 대표자를 확인할 수 있습니다.")
+st.markdown(calendar_markup(), unsafe_allow_html=True)
 st.divider()
 st.caption("예약 정보는 현재 브라우저 세션에 임시로 저장됩니다.")
